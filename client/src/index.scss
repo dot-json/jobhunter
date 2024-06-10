@@ -1,0 +1,78 @@
+@use "@carbon/react" with (
+  $font-path: "@ibm/plex"
+);
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+* {
+  outline: none;
+}
+body {
+  background-color: #161616;
+}
+
+a.cds--header__name:focus {
+  border-color: transparent;
+  border: none;
+  border-width: 0;
+}
+a.cds--header__menu-item:focus {
+  border-color: transparent;
+}
+.cds--btn--primary:focus {
+  border-color: transparent;
+  box-shadow: none;
+}
+.cds--btn--secondary:focus {
+  border-color: transparent;
+  box-shadow: none;
+}
+.cds--btn--danger:focus {
+  border-color: transparent;
+  box-shadow: none;
+}
+.cds--slider-container--two-handles {
+  max-width: none;
+  width: 100%;
+}
+.cds--checkbox:focus + .cds--checkbox-label::before,
+.cds--checkbox:checked:focus + .cds--checkbox-label::before {
+  outline: none;
+}
+.cds--text-truncate--end {
+  white-space: nowrap;
+}
+.cds--text-area__wrapper,
+.cds--text-area {
+  height: 100%;
+}
+.cds--header__name {
+  border: none !important;
+  border-width: 0 !important;
+}
+
+#root {
+  --cds-focus: #0f62fe;
+
+  --toastify-color-dark: #262626;
+  --toastify-color-light: #f4f4f4;
+  --toastify-color-success: rgb(36, 161, 72);
+  --toastify-color-info: rgb(15, 98, 254);
+  --toastify-color-warning: rgb(253, 220, 105);
+  --toastify-color-error: rgb(218, 30, 40);
+}
+.Toastify__toast {
+  border-radius: 0;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
