@@ -10,7 +10,7 @@ import {
 
 const initialState = {
   salaryRange: { min: 0, max: 5000000 },
-  jobType: "full-time",
+  jobType: "all",
   city: "",
   homeOffice: false,
 };
@@ -20,7 +20,10 @@ const filterReducer = (state = initialState, action) => {
     case SET_SALARY_RANGE:
       return {
         ...state,
-        priceRange: action.payload,
+        salaryRange: {
+          min: parseInt(action.payload.min) || 0,
+          max: parseInt(action.payload.max) || 5000000,
+        },
       };
     case SET_JOB_TYPE:
       return {

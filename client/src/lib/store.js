@@ -3,6 +3,7 @@ import userReducer from "./reducers/userReducer";
 import filterReducer from "./reducers/filterReducer";
 import advertsReducer from "./reducers/advertsReducer";
 import experiencesReducer from "./reducers/experiencesReducer";
+import applicationsReducer from "./reducers/applicationsReducer";
 
 export default configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export default configureStore({
     filters: filterReducer,
     adverts: advertsReducer,
     experiences: experiencesReducer,
+    applications: applicationsReducer,
   },
 });

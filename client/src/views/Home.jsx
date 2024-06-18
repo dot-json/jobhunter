@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import SearchField from "../components/SearchField";
 import { cn } from "../lib/utils";
 import { useSelector } from "react-redux";
@@ -8,6 +9,32 @@ import { HUF } from "../lib/utils";
 const Home = () => {
   const navigate = useNavigate();
   const { adverts, isLoading, error } = useSelector((state) => state.adverts);
+  const { salaryRange, jobType, city, homeOffice } = useSelector(
+    (state) => state.filters,
+  );
+
+  const [filteredAdverts, setFilteredAdverts] = useState([]);
+
+  const jobTypes = {
+    "full-time": "Teljes munkaidős",
+    "part-time": "Részmunkaidős",
+    internship: "Gyakornok",
+  };
+
+  useEffect(() => {
+    if (adverts) {
+      const filtered = adverts.filter((advert) => {
+        const salaryInRange =
+          advert.salaryFrom >= salaryRange.min &&
+          advert.salaryTo <= salaryRange.max;
+        const jobTypeMatch = jobType === "all" || advert.type === jobType;
+        const cityMatch = city === "" || advert.city === city;
+        const homeOfficeMatch = homeOffice ? advert.homeOffice : true;
+        return salaryInRange && jobTypeMatch && cityMatch && homeOfficeMatch;
+      });
+      setFilteredAdverts(filtered);
+    }
+  }, [salaryRange, jobType, city, homeOffice, adverts]);
 
   return (
     <div className={cn("flex flex-col gap-12 py-16")}>
@@ -20,7 +47,7 @@ const Home = () => {
         <hr className={cn("border-t-cds-border")} />
         {!isLoading ? (
           <>
-            {adverts.map((advert) => (
+            {filteredAdverts.map((advert) => (
               <div key={advert.id}>
                 <div
                   className={cn(
@@ -37,7 +64,9 @@ const Home = () => {
                       {HUF.format(advert.salaryFrom)} -{" "}
                       {HUF.format(advert.salaryTo)}
                     </p>
-                    <p className={cn("text-right font-light")}>{advert.type}</p>
+                    <p className={cn("text-right font-light")}>
+                      {jobTypes[advert.type]}
+                    </p>
                   </div>
                 </div>
                 <hr className={cn("border-t-cds-border")} />

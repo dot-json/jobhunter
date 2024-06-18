@@ -30,7 +30,7 @@ const MyAdverts = () => {
 
   useEffect(() => {
     setMyAdverts(adverts.filter((ad) => ad.userId === user.id));
-  }, [adverts.length]);
+  }, [adverts]);
 
   return (
     <div className={cn("my-8 flex size-full flex-col gap-6 md:my-16")}>

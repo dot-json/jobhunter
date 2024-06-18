@@ -37,9 +37,15 @@ const Header = () => {
           </HeaderName>
           {user && (
             <HeaderNavigation aria-label="Carbon Design System">
-              <HeaderMenuItem href="/my-adverts">Hirdetéseim</HeaderMenuItem>
               <HeaderMenuItem href="/dashboard">Profil</HeaderMenuItem>
-              <HeaderMenuItem href="/advert">Új hirdetés</HeaderMenuItem>
+              {user.role === "company" && (
+                <>
+                  <HeaderMenuItem href="/my-adverts">
+                    Hirdetéseim
+                  </HeaderMenuItem>
+                  <HeaderMenuItem href="/advert">Új hirdetés</HeaderMenuItem>
+                </>
+              )}
             </HeaderNavigation>
           )}
 

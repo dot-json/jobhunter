@@ -16,6 +16,7 @@ import Job from "./views/Job";
 import MyAdverts from "./views/MyAdverts";
 
 import { loadAdverts } from "./lib/actions/advertsActions";
+import { loadApplications } from "./lib/actions/applicationsActions";
 
 function App() {
   const location = useLocation();
@@ -23,8 +24,11 @@ function App() {
   const user = useSelector((state) => state.user.user);
 
   useEffect(() => {
+    if (user) {
+      dispatch(loadApplications());
+    }
     dispatch(loadAdverts());
-  }, []);
+  }, [user]);
 
   return (
     <>

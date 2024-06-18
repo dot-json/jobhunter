@@ -34,15 +34,17 @@ const SearchField = () => {
   };
 
   const jobTypes = [
+    { id: "all", text: "Összes" },
     { id: "full-time", text: "Teljes munkaidős" },
     { id: "part-time", text: "Részmunkaidős" },
-    { id: "intern", text: "Gyakornok" },
+    { id: "internship", text: "Gyakornok" },
   ];
 
-  const handleSalaryRangeChange = () => {
-    dispatch(
-      setSalaryRange(salaryMinRef.current.value, salaryMaxRef.current.value),
-    );
+  const handleSalaryMinChange = (e) => {
+    dispatch(setSalaryRange(e.target.value, filters.salaryRange.max));
+  };
+  const handleSalaryMaxChange = (e) => {
+    dispatch(setSalaryRange(filters.salaryRange.min, e.target.value));
   };
   const handleJobTypeChange = (id) => {
     dispatch(setJobType(id));
@@ -145,15 +147,15 @@ const SearchField = () => {
                   type="number"
                   id="salaryFrom"
                   labelText="Minimum fizetés"
-                  value={0}
-                  onChange={handleSalaryRangeChange}
+                  placeholder="0"
+                  onChange={handleSalaryMinChange}
                 />
                 <TextInput
                   type="number"
                   id="salaryTo"
                   labelText="Maximum fizetés"
-                  value={5000000}
-                  onChange={handleSalaryRangeChange}
+                  placeholder="5000000"
+                  onChange={handleSalaryMaxChange}
                 />
               </div>
               <Dropdown

@@ -7,22 +7,50 @@ import {
   StructuredListCell,
   StructuredListBody,
   Loading,
+  Modal,
 } from "@carbon/react";
-import { Pen } from "@carbon/icons-react";
+import { TaskAdd, TaskRemove, IbmLpa } from "@carbon/icons-react";
 import { cn } from "../lib/utils";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { notify } from "../lib/utils";
 import { HUF } from "../lib/utils";
+import {
+  apply,
+  deleteApplication,
+  loadApplicants,
+} from "../lib/actions/applicationsActions";
 
 const Job = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [ad, setAd] = useState({});
   const { id } = useParams();
   const { adverts, isLoading, error } = useSelector((state) => state.adverts);
   const { user } = useSelector((state) => state.user);
+  const { applications, applicants } = useSelector(
+    (state) => state.applications,
+  );
+
+  const [ad, setAd] = useState({});
+  const [hasApplied, setHasApplied] = useState(
+    applications.some((application) => application.jobId === parseInt(id)),
+  );
+  const [applicantsOpen, setApplicantsOpen] = useState(false);
+
+  const jobTypes = {
+    "full-time": "Teljes munkaidős",
+    "part-time": "Részmunkaidős",
+    internship: "Gyakornok",
+  };
 
   useEffect(() => {
+    if (user.role === "company") {
+      dispatch(loadApplicants(parseInt(id)));
+    } else {
+      setHasApplied(
+        applications.some((application) => application.jobId === parseInt(id)),
+      );
+    }
     if (adverts.length > 0) {
       const ad = adverts.find((ad) => ad.id === parseInt(id));
       if (ad === undefined) {
@@ -32,7 +60,7 @@ const Job = () => {
       }
       setAd(ad);
     }
-  }, [adverts.length]);
+  }, [adverts, applications]);
 
   if (adverts.length === 0 || isLoading) {
     return <Loading />;
@@ -49,14 +77,31 @@ const Job = () => {
           <h1 className={cn("text-2xl font-bold")}>{ad.company}</h1>
           <p>Megtetszett a lehetőség? Jelentkezz!</p>
         </div>
-        {user.role === "jobseeker" && (
+        {user.role === "jobseeker" ? (
+          <Button
+            size="md"
+            kind={hasApplied ? "danger" : "primary"}
+            className={cn("flex items-center gap-3")}
+            onClick={() => {
+              if (hasApplied) {
+                dispatch(deleteApplication(parseInt(id)));
+              } else {
+                dispatch(apply(parseInt(id)));
+              }
+            }}
+          >
+            {hasApplied ? <TaskRemove size={24} /> : <TaskAdd size={24} />}
+            {hasApplied ? "Leadás" : "Jelentkezés"}
+          </Button>
+        ) : (
           <Button
             size="md"
             kind="primary"
             className={cn("flex items-center gap-3")}
+            onClick={() => setApplicantsOpen(true)}
           >
-            <Pen size={24} />
-            Jelentkezés
+            <IbmLpa size={24} />
+            Jelentkezők
           </Button>
         )}
       </div>
@@ -99,7 +144,7 @@ const Job = () => {
               Foglalkoztatás típusa
             </StructuredListCell>
             <StructuredListCell className={cn("text-lg")}>
-              {ad.type}
+              {jobTypes[ad.type]}
             </StructuredListCell>
           </StructuredListRow>
           <StructuredListRow>
@@ -112,6 +157,24 @@ const Job = () => {
           </StructuredListRow>
         </StructuredListBody>
       </StructuredListWrapper>
+      <Modal
+        open={applicantsOpen}
+        onRequestClose={() => setApplicantsOpen(false)}
+        passiveModal
+        modalHeading="Jelentkezők"
+      >
+        <StructuredListWrapper>
+          <StructuredListBody>
+            {applicants.map((applicant) => (
+              <StructuredListRow key={applicant.id}>
+                <StructuredListCell className={cn("text-lg")}>
+                  {applicant.user.fullname}
+                </StructuredListCell>
+              </StructuredListRow>
+            ))}
+          </StructuredListBody>
+        </StructuredListWrapper>
+      </Modal>
     </div>
   );
 };
